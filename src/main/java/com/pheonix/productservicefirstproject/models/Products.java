@@ -8,11 +8,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
+//class to store data of product objects
 public class Products extends BaseModel{
 
-    private String productName;
+    private long id;
+    private String title;
     private double price;
     private int quantity;
     private Category category;
+    private String image;
 
 }

@@ -13,7 +13,7 @@ public class ProductServiceFirstProjectApplication {
 
 		Products product = new Products();
 		// product.proctName = // not allowed cause its private.
-		product.setProductName("iphone");
+		product.setTitle("iphone");
 	}
 
 }
