@@ -6,6 +6,7 @@ import com.pheonix.productservicefirstproject.models.Products;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // using @Service annotation - ask spring to create the object of this class
@@ -41,7 +42,27 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public List<Products> getAllProducts() {
-        return List.of();
+        // since it will be returning a list we have to create a list of object that stores the products
+
+        //List<FakeStoreProductDto> : can't be used , instead use Array
+        //<FakeStoreProductDto> is the generic used here , but this line of code is compiled during Runtime
+        // During Runtime , generic don't matter everything is considered as object
+        //Runtime Type Checks: You can't directly check the type of a generic list at runtime using instanceof or .getClass().
+        // You would need to cast the elements to their specific types and handle potential ClassCastExceptions.
+
+        FakeStoreProductDto[] fakeStoreProductDtos =
+                restTemplate.getForObject(
+                        "https://fakestoreapi.com/products",
+                        FakeStoreProductDto[].class);
+
+        //convert list of fakeStoreDtos into a list of Products
+        List<Products> products = new ArrayList<>();
+        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos){
+            products.add(convertFakestoreProductDtoToProducts(fakeStoreProductDto));
+        }
+
+        return products;
+
     }
 
     private Products convertFakestoreProductDtoToProducts(FakeStoreProductDto fakeStoreProductDto) {

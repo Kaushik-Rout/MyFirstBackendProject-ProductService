@@ -22,13 +22,19 @@ public class ProductController {
         this.productService = productService;
     }
 
+    //FakeStore link : ('https://fakestoreapi.com/products/1')
     // http://localhost:8080/products/{id}
     @GetMapping("/{id}")
     public Products getProductByID(@PathVariable("id") long id) {
+
         return productService.getSingleProduct(id);
     }
 
+    // FakeStore link : ('https://fakestoreapi.com/products')
+    // Since /products is already in  RequestMapping annotation.
+    @GetMapping()
     public List<Products> getAllProducts(){
+
         return productService.getAllProducts();
     }
 }
