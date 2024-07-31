@@ -3,7 +3,10 @@ package com.pheonix.productservicefirstproject.services;
 import com.pheonix.productservicefirstproject.dtos.FakeStoreProductDto;
 import com.pheonix.productservicefirstproject.models.Category;
 import com.pheonix.productservicefirstproject.models.Products;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpMessageConverterExtractor;
+import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -44,11 +47,12 @@ public class FakeStoreProductService implements ProductService{
     public List<Products> getAllProducts() {
         // since it will be returning a list we have to create a list of object that stores the products
 
-        //List<FakeStoreProductDto> : can't be used , instead use Array
+        //List<FakeStoreProductDto>.class : can't be used , instead use Array
         //<FakeStoreProductDto> is the generic used here , but this line of code is compiled during Runtime
         // During Runtime , generic don't matter everything is considered as object
         //Runtime Type Checks: You can't directly check the type of a generic list at runtime using instanceof or .getClass().
         // You would need to cast the elements to their specific types and handle potential ClassCastExceptions.
+        //Class Literals: The syntax List<FakeStoreProductDto>.class is incorrect. You can't use a generic type directly in a class literal.
 
         FakeStoreProductDto[] fakeStoreProductDtos =
                 restTemplate.getForObject(
@@ -62,6 +66,28 @@ public class FakeStoreProductService implements ProductService{
         }
 
         return products;
+
+    }
+
+    @Override
+    public Products updateProduct(Long productId, Products product) {
+        //restTemplate.patchForObject() //we modifies path() method of restTemplate to not just update product but also return the updated product.
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(product, FakeStoreProductDto.class);
+        HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor(FakeStoreProductDto.class, restTemplate.getMessageConverters());
+
+        FakeStoreProductDto response = restTemplate.execute("https://fakestoreapi.com/products/" + productId, HttpMethod.PATCH, requestCallback, responseExtractor);
+
+        return convertFakestoreProductDtoToProducts(response);
+    }
+
+    @Override
+    public Products replaceProduct(Long productId, Products product) {
+        //restTemplate.put();
+        return null;
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
 
     }
 

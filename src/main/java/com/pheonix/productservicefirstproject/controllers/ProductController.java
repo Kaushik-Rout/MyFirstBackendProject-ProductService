@@ -2,10 +2,7 @@ package com.pheonix.productservicefirstproject.controllers;
 
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.services.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,5 +33,22 @@ public class ProductController {
     public List<Products> getAllProducts(){
 
         return productService.getAllProducts();
+    }
+
+    public Products deleteProduct(long id) {
+        return null;
+    }
+    //PATCH request - partial update , will update the product , incase there is an attribute not define by the user , I would keep the original attribute as its data.
+    // PATCH -> http://localhost:8080/products/{id}
+    // @RequestBody : takes the product as input from the client
+    @PatchMapping("{id}")
+    public Products updateProduct(@PathVariable("id") long id, @RequestBody Products product) {
+        return productService.updateProduct(id, product);
+    }
+    //PUT request - complete replace, will update the product , incase there is an attribute not define by the user , I would set it as Null.
+    // PUT -> http://localhost:8080/products/{id}
+    @PutMapping("/{id}")
+    public Products replaceProduct(@PathVariable("id") long id, @RequestBody Products product) {
+        return null;
     }
 }
