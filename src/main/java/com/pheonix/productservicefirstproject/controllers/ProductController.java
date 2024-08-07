@@ -2,6 +2,8 @@ package com.pheonix.productservicefirstproject.controllers;
 
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.services.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,15 +18,38 @@ public class ProductController {
     // Spring has to create an object of class which implements "ProductService" i.e. FakeStoreProductService
     // using @Service annotation - ask spring to create the object of FakeStore... class
     public ProductController(ProductService productService){
+
         this.productService = productService;
     }
 
     //FakeStore link : ('https://fakestoreapi.com/products/1')
     // http://localhost:8080/products/{id}
+    //ResponseEntity send the server ststus like 200 good request, 404 bad request etc...
     @GetMapping("/{id}")
-    public Products getProductByID(@PathVariable("id") long id) {
+    public ResponseEntity<Products> getProductByID(@PathVariable("id") long id) {
 
-        return productService.getSingleProduct(id);
+        //return productService.getSingleProduct(id);
+
+        ResponseEntity<Products> responseEntity = new ResponseEntity<>(
+                productService.getSingleProduct(id),
+                HttpStatus.OK
+        ); //OK - 200 means good request, BAD_REQUES - 400T means bad request, FORBIDDEN - 403 forbidden
+
+//        Exception Handling : -
+//        ResponseEntity<Products> responseEntity = null;
+
+//        try {
+//            responseEntity = new ResponseEntity<>(
+//                    productService.getSingleProduct(id),
+//                    HttpStatus.OK
+//            );
+//        }catch(RuntimeException e){
+//            responseEntity = new ResponseEntity<>(
+//                    HttpStatus.NOT_FOUND);
+//
+//        }
+
+        return responseEntity;
     }
 
     // FakeStore link : ('https://fakestoreapi.com/products')
@@ -36,6 +61,7 @@ public class ProductController {
     }
 
     public Products deleteProduct(long id) {
+
         return null;
     }
     //PATCH request - partial update , will update the product , incase there is an attribute not define by the user , I would keep the original attribute as its data.
@@ -49,6 +75,17 @@ public class ProductController {
     // PUT -> http://localhost:8080/products/{id}
     @PutMapping("/{id}")
     public Products replaceProduct(@PathVariable("id") long id, @RequestBody Products product) {
+
         return null;
     }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handlerArithmaticException(){
+        ResponseEntity<String> response = new ResponseEntity<>(
+                "Arithmatic Exception happened, Calling from controller",
+                HttpStatus.BAD_REQUEST
+        );
+        return response;
+    }
+
 }
