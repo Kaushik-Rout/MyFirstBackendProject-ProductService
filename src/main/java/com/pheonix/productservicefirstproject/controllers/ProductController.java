@@ -1,5 +1,6 @@
 package com.pheonix.productservicefirstproject.controllers;
 
+import com.pheonix.productservicefirstproject.exceptions.ProductNotFoundException;
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.services.ProductService;
 import org.springframework.http.HttpStatus;
@@ -26,14 +27,9 @@ public class ProductController {
     // http://localhost:8080/products/{id}
     //ResponseEntity send the server ststus like 200 good request, 404 bad request etc...
     @GetMapping("/{id}")
-    public ResponseEntity<Products> getProductByID(@PathVariable("id") long id) {
+    public ResponseEntity<Products> getProductByID(@PathVariable("id") long id) throws ProductNotFoundException {
 
         //return productService.getSingleProduct(id);
-
-        ResponseEntity<Products> responseEntity = new ResponseEntity<>(
-                productService.getSingleProduct(id),
-                HttpStatus.OK
-        ); //OK - 200 means good request, BAD_REQUES - 400T means bad request, FORBIDDEN - 403 forbidden
 
 //        Exception Handling : -
 //        ResponseEntity<Products> responseEntity = null;
@@ -48,6 +44,11 @@ public class ProductController {
 //                    HttpStatus.NOT_FOUND);
 //
 //        }
+
+        ResponseEntity<Products> responseEntity = new ResponseEntity<>(
+                productService.getSingleProduct(id),
+                HttpStatus.OK
+        ); //OK - 200 means good request, BAD_REQUES - 400T means bad request, FORBIDDEN - 403 forbidden
 
         return responseEntity;
     }
@@ -79,7 +80,8 @@ public class ProductController {
         return null;
     }
 
-    @ExceptionHandler
+//    This gets more priority than controller advice , It kind of overrides controler advice Runtime excption handler
+    @ExceptionHandler(ArithmeticException.class)
     public ResponseEntity<String> handlerArithmaticException(){
         ResponseEntity<String> response = new ResponseEntity<>(
                 "Arithmatic Exception happened, Calling from controller",

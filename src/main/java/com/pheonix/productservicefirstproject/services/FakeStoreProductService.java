@@ -1,6 +1,7 @@
 package com.pheonix.productservicefirstproject.services;
 
 import com.pheonix.productservicefirstproject.dtos.FakeStoreProductDto;
+import com.pheonix.productservicefirstproject.exceptions.ProductNotFoundException;
 import com.pheonix.productservicefirstproject.models.Category;
 import com.pheonix.productservicefirstproject.models.Products;
 import org.springframework.http.HttpMethod;
@@ -28,11 +29,11 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Products getSingleProduct(Long productId) {
+    public Products getSingleProduct(Long productId) throws ProductNotFoundException {
         //Note:
         //call fakestore to fetch the details of the product with given Id : --> http call
         //for that we can use RestTemplate , others webClient ,,,etc
-        /*RestTemplate restTemplate = new RestTemplate(); */ //*********
+        //*RestTemplate restTemplate = new RestTemplate(); */ //*********
         //but
         //this way we have to create object of RestTemplate in every method o fetch data from fakestore
         //Hence, we will create a config package and create a class of RestTemplate , so that ,
@@ -41,12 +42,16 @@ public class FakeStoreProductService implements ProductService{
                 restTemplate.getForObject(
                 "https://fakestoreapi.com/products/" + productId, FakeStoreProductDto.class); // .class means type of data/object
 
+        // Case: handle the situation if productId sent by client is invalid : Exception Handling.
+        if (fakeStoreProductDto == null){
+            // if fakestoreproductDto is pointing to a null object then code should stop here
+            // we aren't caliing Nullpointer exception , we are throwing a specific  customized exception.
+            throw new ProductNotFoundException("No such Product with ID: "+ productId + " exists.");
+        }
+
         //since return type is Products
-        //convert fakeStoreProductDto into product type.
-//        if (fakeStoreProductDto == Null){
-//            throw new RuntimeException("Product not found")
-//        }
         return convertFakestoreProductDtoToProducts(fakeStoreProductDto);
+
     }
 
     @Override
