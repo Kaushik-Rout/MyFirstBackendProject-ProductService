@@ -7,10 +7,7 @@ import com.pheonix.productservicefirstproject.models.Products;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpMessageConverterExtractor;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,9 +99,12 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Products replaceProduct(Long productId, Products product) {
+    public void replaceProduct(Long productId, Products product) {
         //restTemplate.put();
-        return null;
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(product);
+        restTemplate.execute(
+                "https://fakestoreapi.com/products/" + productId, HttpMethod.PUT,
+                requestCallback, (ResponseExtractor)null);
     }
 
     @Override
