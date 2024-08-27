@@ -1,5 +1,6 @@
 package com.pheonix.productservicefirstproject.models;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import lombok.Setter;
 //enum is not a good idea , hence we are defining as a class.
 @Getter
 @Setter
+@Entity
 public class Category extends BaseModel{
     private String categoryName;
     private String description;
