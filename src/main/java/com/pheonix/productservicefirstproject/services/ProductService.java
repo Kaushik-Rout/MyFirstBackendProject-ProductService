@@ -5,6 +5,7 @@ import com.pheonix.productservicefirstproject.models.Products;
 
 import java.util.List;
 
+//Since this interface is being used bu 2 classes, @Primary annotation will help prioritize which class should use it.
 public interface ProductService {
     //by default all the attributes of an interface are public or static
     Products getSingleProduct(Long productId) throws ProductNotFoundException;
@@ -16,4 +17,6 @@ public interface ProductService {
     void replaceProduct(Long productId, Products product);
 
     void deleteProduct(Long productId);
+
+    Products addNewProduct(Products product);
 }

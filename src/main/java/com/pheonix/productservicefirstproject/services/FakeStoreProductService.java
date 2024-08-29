@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 // using @Service annotation - ask spring to create the object of this class
-//spring - dev has makrked this class as special class so I need to store the object of this class in the application context
+//springboot: dev has makrked this class as special class so I need to store the object of this class in the application context
 //other options - @Controller / @Component / @Repository etc. Since its a service class we marked it as @Service
-@Service
+@Service("fakestoreProductService")
 public class FakeStoreProductService implements ProductService{
 
     private RestTemplate restTemplate;
@@ -110,6 +110,11 @@ public class FakeStoreProductService implements ProductService{
     @Override
     public void deleteProduct(Long productId) {
 
+    }
+
+    @Override
+    public Products addNewProduct(Products product) {
+        return null;
     }
 
     private Products convertFakestoreProductDtoToProducts(FakeStoreProductDto fakeStoreProductDto) {

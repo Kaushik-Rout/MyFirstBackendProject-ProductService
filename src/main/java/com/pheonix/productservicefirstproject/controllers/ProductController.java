@@ -3,6 +3,7 @@ package com.pheonix.productservicefirstproject.controllers;
 import com.pheonix.productservicefirstproject.exceptions.ProductNotFoundException;
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,11 @@ public class ProductController {
     private ProductService productService;
 //Spring will create an object of all classes but "ProductService" is an interface how can we create an object of it ?
     // Spring has to create an object of class which implements "ProductService" i.e. FakeStoreProductService
-    // using @Service annotation - ask spring to create the object of FakeStore... class
-    public ProductController(ProductService productService){
+    // using @Service annotation - ask spring to create the object of FakeStore... class /SelfProductService class
+
+    // We are not using @Primary annotation cause if we have to change is we have to move to the particular class and change it
+    // @Qualifier annotation in the constructor for prioritizing the primary class to be linked to the controller
+    public ProductController(@Qualifier("selfProductService") ProductService productService){
 
         this.productService = productService;
     }
@@ -77,6 +81,11 @@ public class ProductController {
     @PutMapping("/{id}")
     public Products replaceProduct(@PathVariable("id") long id, @RequestBody Products product) {
 
+        return null;
+    }
+
+    @PostMapping
+    public Products addProduct(@RequestBody Products product) {
         return null;
     }
 

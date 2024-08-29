@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 //This class will be hosting a set of HTTP APIs
 @RestController
 @RequestMapping("/say") //setting the address of the class in http
-public class SampleController {
+public class
+SampleController {
 
     @GetMapping("/hello") //this is the address to "Get" the data
     public String sayHello(){
