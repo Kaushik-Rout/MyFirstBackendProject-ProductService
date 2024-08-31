@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -63,18 +65,23 @@ public class ProductController {
     public List<Products> getAllProducts(){
 
         return productService.getAllProducts();
+
     }
 
-    public Products deleteProduct(long id) {
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable("id") Long id) {
 
-        return null;
+        productService.deleteProduct(id);
+
     }
     //PATCH request - partial update , will update the product , incase there is an attribute not define by the user , I would keep the original attribute as its data.
     // PATCH -> http://localhost:8080/products/{id}
     // @RequestBody : takes the product as input from the client
     @PatchMapping("{id}")
     public Products updateProduct(@PathVariable("id") long id, @RequestBody Products product) {
+
         return productService.updateProduct(id, product);
+
     }
     //PUT request - complete replace, will update the product , incase there is an attribute not define by the user , I would set it as Null.
     // PUT -> http://localhost:8080/products/{id}
@@ -86,7 +93,7 @@ public class ProductController {
 
     @PostMapping
     public Products addProduct(@RequestBody Products product) {
-        return null;
+        return productService.addNewProduct(product);
     }
 
 //    This gets more priority than controller advice , It kind of overrides controler advice Runtime excption handler

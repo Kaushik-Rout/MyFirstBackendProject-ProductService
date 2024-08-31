@@ -15,7 +15,6 @@ import lombok.Setter;
 @Entity
 //class to store data of product objects
 public class Products extends BaseModel{
-    private Long id; //non-primitive : Long - can store objects and can be null unlinke primitive long.
     private String title;
     private double price;
     private int quantity;
