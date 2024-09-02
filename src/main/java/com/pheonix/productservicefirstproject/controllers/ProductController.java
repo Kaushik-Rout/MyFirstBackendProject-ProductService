@@ -78,7 +78,7 @@ public class ProductController {
     // PATCH -> http://localhost:8080/products/{id}
     // @RequestBody : takes the product as input from the client
     @PatchMapping("{id}")
-    public Products updateProduct(@PathVariable("id") long id, @RequestBody Products product) {
+    public Products updateProduct(@PathVariable("id") long id, @RequestBody Products product) throws ProductNotFoundException {
 
         return productService.updateProduct(id, product);
 
@@ -86,9 +86,8 @@ public class ProductController {
     //PUT request - complete replace, will update the product , incase there is an attribute not define by the user , I would set it as Null.
     // PUT -> http://localhost:8080/products/{id}
     @PutMapping("/{id}")
-    public Products replaceProduct(@PathVariable("id") long id, @RequestBody Products product) {
-
-        return null;
+    public void replaceProduct(@PathVariable("id") long id, @RequestBody Products product) throws ProductNotFoundException {
+        productService.replaceProduct(id, product);
     }
 
     @PostMapping

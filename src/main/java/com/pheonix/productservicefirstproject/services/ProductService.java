@@ -12,9 +12,9 @@ public interface ProductService {
 
     List<Products> getAllProducts();
 
-    Products updateProduct(Long productid, Products product);
+    Products updateProduct(Long productid, Products product) throws ProductNotFoundException;
 
-    void replaceProduct(Long productId, Products product);
+    void replaceProduct(Long productId, Products product) throws ProductNotFoundException;
 
     void deleteProduct(Long productId);
 

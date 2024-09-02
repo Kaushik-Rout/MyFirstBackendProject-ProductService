@@ -16,8 +16,8 @@ import lombok.Setter;
 //class to store data of product objects
 public class Products extends BaseModel{
     private String title;
-    private double price;
-    private int quantity;
+    private Double price;
+    private Integer quantity;
     private String image;
     @ManyToOne //in product table Category column will be made as Category _ID and it will become a Foreign Kay constraint
     private Category category;

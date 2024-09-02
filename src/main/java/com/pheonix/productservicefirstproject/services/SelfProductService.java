@@ -20,7 +20,6 @@ public class SelfProductService implements ProductService {
 
     public SelfProductService(ProductRepository productRepository, CategoryRepository CategoryRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
-        this.CategoryRepository = CategoryRepository;
         this.categoryRepository = categoryRepository;
     }
 
@@ -34,29 +33,80 @@ public class SelfProductService implements ProductService {
         }
         return productsOptional.get();
     }
-
+    //GET
     @Override
     public List<Products> getAllProducts() {
         return productRepository.findAll();
     }
-
+    //PATCH
     @Override
-    public Products updateProduct(Long productid, Products product) {
-        return null;
-    }
+    public Products updateProduct(Long productid, Products product) throws ProductNotFoundException {
+        //getting the product to update
+        Optional<Products> productOptional = productRepository.findById(productid);
+        //if not found
+        if (productOptional.isEmpty()) {
+            throw new ProductNotFoundException("Product with ID" + productid + "not found");
+        }
 
+        Products productinDB = productOptional.get();
+        //checking what all update in the product is being requested
+        if (product.getTitle() != null){
+            productinDB.setTitle(product.getTitle());
+        }
+
+        if (product.getPrice() != null){
+            productinDB.setPrice(product.getPrice());
+        }
+
+        if (product.getQuantity() != null){
+            productinDB.setQuantity(product.getQuantity());
+        }
+
+        return productRepository.save(productinDB);
+
+    }
+    //PUT
     @Override
-    public void replaceProduct(Long productId, Products product) {
+    public void replaceProduct(Long productid, Products product) throws ProductNotFoundException {
+        //getting the product to update
+        Optional<Products> productOptional = productRepository.findById(productid);
+        //if not found
+        if (productOptional.isEmpty()) {
+            throw new ProductNotFoundException("Product with ID" + productid + "not found");
+        }
+        Products productinDB = productOptional.get();
 
+        //getting and setting the category
+        Category category = product.getCategory();
+        category = categoryRepository.save(category);
+        productinDB.setCategory(category);
+
+        //or -depending on situations
+        //getting and setting the category
+//        if(product.getCategory()!=null){
+//            Category category = product.getCategory();
+//            if(category.getId()==null){
+//                category = categoryRepository.save(category);
+//            }
+//            productinDB.setCategory(category);
+//        }
+
+        //setting all new values to replace
+        productinDB.setTitle(product.getTitle());
+        productinDB.setPrice(product.getPrice());
+        productinDB.setQuantity(product.getQuantity());
+        productinDB.setImage(null);
+
+        productRepository.save(productinDB);
     }
-
+    //DELETE
     @Override
     public void deleteProduct(Long productId) {
 
         productRepository.deleteById(productId);
 
     }
-
+    //POST
     @Override
     public Products addNewProduct(Products product) {
 

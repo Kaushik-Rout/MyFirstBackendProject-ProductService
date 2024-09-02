@@ -1,8 +1,11 @@
 package com.pheonix.productservicefirstproject.repositories;
 
 import com.pheonix.productservicefirstproject.models.Products;
+import com.pheonix.productservicefirstproject.projections.ProductWithIdAndTitle;
+import com.pheonix.productservicefirstproject.projections.ProductWithIdTitleAndPrice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -50,12 +53,30 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
     * */
     Optional<Products> findById(Long id);
 
+    //GET - HTTP Call
     @Override
     List<Products> findAll();
 
     //D - delete a product
+    //DELETE - HTTP Call
     void deleteById(Long id);
 
     // C & U : Create & Update a product
-    //Products save(Products products);
+    //POST - HTTP Call
+    Products save(Products products);
+
+    // HQL
+    // search only for id and titls of the products
+    @Query("select p.id as Id, p.title as Title from Products p ")
+    List<ProductWithIdAndTitle> fetchIdAndTitle();
+
+    //Search for id , title & price of the products
+    @Query("select p.id as Id, p.title as Title, p.price as Price from Products p")
+    List<ProductWithIdTitleAndPrice> fetchIdTitleAndPrice();
+
+    // fetch with particular id fetch from user ":x"(where we want to mention it in query
+    @Query("select p.id as Id, p.title as Title, p.price as Price from Products p where p.id =:x")
+    //here the return type ProductWithIdTitleAndPrice is not a list cause it will get only 1  product
+    ProductWithIdTitleAndPrice fetchIdTitlePriceWithId(Long x);
+
 }
