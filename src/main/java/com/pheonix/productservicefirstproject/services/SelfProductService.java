@@ -90,7 +90,6 @@ public class SelfProductService implements ProductService {
 //            }
 //            productinDB.setCategory(category);
 //        }
-
         //setting all new values to replace
         productinDB.setTitle(product.getTitle());
         productinDB.setPrice(product.getPrice());
@@ -109,17 +108,17 @@ public class SelfProductService implements ProductService {
     //POST
     @Override
     public Products addNewProduct(Products product) {
-
-        Category category= product.getCategory();
-        // while we add a new product , first we need to create its category and save it then save the product.
-        if (category.getId()==null){
-            //We need to create a new category object in the DB first
-            category = categoryRepository.save((category));
-            //this catoegory is the output with the id set ------ save(category) is the input category with no id
-            //set category for thr product object
-            product.setCategory(category);
-        }
-
+        //Note:
+//we can do the below of we can use "(cascade = CascadeType.PERSIST)" as used in the product model to create category when product is created /added
+//        Category category= product.getCategory();
+//        // while we add a new product , first we need to create its category and save it then save the product.
+//        if (category.getId()==null){
+//            //We need to create a new category object in the DB first
+//            category = categoryRepository.save((category));
+//            //this catoegory is the output with the id set ------ save(category) is the input category with no id
+//            //set category for thr product object
+//            product.setCategory(category);
+//        }
         return productRepository.save(product);
     }
 }
