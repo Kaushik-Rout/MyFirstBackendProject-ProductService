@@ -17,3 +17,5 @@ public class ProductServiceFirstProjectApplication {
 	}
 
 }
+
+//to run the .jar file in cmd : java -jar <jar-file-name.jar>

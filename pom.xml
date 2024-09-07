@@ -10,7 +10,8 @@
 	</parent>
 	<groupId>com.pheonix</groupId>
 	<artifactId>ProductServiceFirstProject</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+<!--	You can edit your .jar file name below like i wrote Scaler-->
+	<version>0.0.1-SCALER</version>
 	<name>ProductServiceFirstProject</name>
 	<description>ProductServiceFirstProject</description>
 	<url/>
@@ -75,6 +76,14 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<version>9.0.0</version>
 		</dependency>
+
+<!--		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator/3.3.2-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+
 
 	</dependencies>
 
