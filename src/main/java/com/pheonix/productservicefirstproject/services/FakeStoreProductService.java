@@ -4,6 +4,9 @@ import com.pheonix.productservicefirstproject.dtos.FakeStoreProductDto;
 import com.pheonix.productservicefirstproject.exceptions.ProductNotFoundException;
 import com.pheonix.productservicefirstproject.models.Category;
 import com.pheonix.productservicefirstproject.models.Products;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -20,13 +23,31 @@ public class FakeStoreProductService implements ProductService{
 
     private RestTemplate restTemplate;
 
-    public FakeStoreProductService(RestTemplate restTemplate) {
+    private RedisTemplate<String, Object> redisTemplate;
+
+    public FakeStoreProductService(RestTemplate restTemplate, RedisTemplate redisTemplate) {
 
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public Products getSingleProduct(Long productId) throws ProductNotFoundException {
+
+        // Fetch the data from the redis cache
+        // in cache data is stored in "key & Value format" in a hash map , hence ".opsForHash()"
+        // inside get , 1st parameter is Hash map name , then the hash key - I haven't implemented redis hence assuming the table name and hash key.
+        Products product = (Products) redisTemplate.opsForHash().get("FKS_PRODUCTS", "PRODUCT_"+productId);
+        //        ---Type Conversion of object to ---> (Products)
+
+        // check if "p" is in the chache
+        if (product != null) {
+            //product is present in the cache memory
+            return product;
+        }
+
+        // Cache_miss : product is not in cache so -> fetch it from DB , add it to cache and return the product to user
+
         //Note:
         //call fakestore to fetch the details of the product with given Id : --> http call
         //for that we can use RestTemplate , others webClient ,,,etc
@@ -46,13 +67,17 @@ public class FakeStoreProductService implements ProductService{
             throw new ProductNotFoundException("No such Product with ID: "+ productId + " exists.");
         }
 
-        //since return type is Products
-        return convertFakestoreProductDtoToProducts(fakeStoreProductDto);
+        //since return type is Products - convert Fakestore object to Products object
+        product= convertFakestoreProductDtoToProducts(fakeStoreProductDto);
 
+        // now store the product in the cache using put()
+        redisTemplate.opsForHash().put("FKS_PRODUCTS", "PRODUCT_"+productId, product);
+
+        return product;
     }
 
     @Override
-    public List<Products> getAllProducts() {
+    public Page<Products> getAllProducts(int pageNumber, int pageSize) {
         // since it will be returning a list we have to create a list of object that stores the products
 
         //List<FakeStoreProductDto>.class : can't be used , instead use Array
@@ -73,7 +98,7 @@ public class FakeStoreProductService implements ProductService{
             products.add(convertFakestoreProductDtoToProducts(fakeStoreProductDto));
         }
 
-        return products;
+        return new PageImpl<>(products);
 
     }
 

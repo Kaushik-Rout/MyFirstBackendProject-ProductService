@@ -5,6 +5,10 @@ import com.pheonix.productservicefirstproject.models.Category;
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.repositories.CategoryRepository;
 import com.pheonix.productservicefirstproject.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,30 +17,60 @@ import java.util.Optional;
 @Service("selfProductService") //Bean name
 public class SelfProductService implements ProductService {
 
+    private RedisTemplate<String, Object> redisTemplate;
+
     private final CategoryRepository categoryRepository;
     private ProductRepository productRepository;
 
     private CategoryRepository CategoryRepository;
 
-    public SelfProductService(ProductRepository productRepository, CategoryRepository CategoryRepository, CategoryRepository categoryRepository) {
+    public SelfProductService(ProductRepository productRepository, CategoryRepository CategoryRepository, CategoryRepository categoryRepository, RedisTemplate redisTemplate) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.redisTemplate = redisTemplate;
+
     }
 
     @Override
     public Products getSingleProduct(Long productId) throws ProductNotFoundException {
+        // Fetch the data from the redis cache
+        // in cache data is stored in "key & Value format" in a hash map , hence ".opsForHash()"
+        // inside get , 1st parameter is Hash map name , then the hash key - I haven't implemented redis hence assuming the table name and hash key.
+        Products product = (Products) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCT_"+productId);
+        //        ---Type Conversion of object to ---> (Products)
+
+        // check if "p" is in the chache
+        if (product != null) {
+            //product is present in the cache memory
+            return product;
+        }
+
+        // Cache_miss : product is not in cache so -> fetch it from DB , add it to cache and return the product to user
+
         //make a call to DB to fetch the product with the requested ID
         Optional<Products> productsOptional = productRepository.findById(productId);
 
         if (productsOptional.isEmpty()) {
             throw new ProductNotFoundException("Product :"+productId+" not found");
         }
-        return productsOptional.get();
+        product= productsOptional.get();
+
+        // now store the product in the cache using put()
+        redisTemplate.opsForHash().put("FKS_PRODUCTS", "PRODUCT_"+productId, product);
+
+        return product;
     }
     //GET
     @Override
-    public List<Products> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Products> getAllProducts(int pageNumber, int pageSize) {
+        //Sort class help in sorting the data according to the query
+        Sort sort= Sort.by("price").descending().and(Sort.by("title").ascending()).and(Sort.by("quantity").ascending());
+
+        Page<Products> productPages = productRepository.findAll(
+                PageRequest.of(pageNumber, pageSize, sort)
+        );
+        //"PageRequest" is a class which implements Pagable so we can use it for pagination && ".of()" contains and handle the limit and offset of the page
+        return productPages;
     }
     //PATCH
     @Override

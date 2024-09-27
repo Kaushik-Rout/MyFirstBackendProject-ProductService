@@ -4,6 +4,7 @@ import com.pheonix.productservicefirstproject.exceptions.ProductNotFoundExceptio
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,9 +63,9 @@ public class ProductController {
     // FakeStore link : ('https://fakestoreapi.com/products')
     // Since /products is already in  RequestMapping annotation.
     @GetMapping()
-    public List<Products> getAllProducts(){
+    public Page<Products> getAllProducts(@RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize){
 
-        return productService.getAllProducts();
+        return productService.getAllProducts(pageNumber, pageSize);
 
     }
 

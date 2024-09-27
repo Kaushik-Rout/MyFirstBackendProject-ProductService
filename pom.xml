@@ -66,6 +66,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!--		removing the version cause its a spring dependency-->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
@@ -84,6 +85,11 @@
 			<version>3.3.2</version>
 		</dependency>
 
+<!--		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis/3.3.3-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
 	</dependencies>
 

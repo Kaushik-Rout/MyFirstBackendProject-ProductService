@@ -3,6 +3,8 @@ package com.pheonix.productservicefirstproject.repositories;
 import com.pheonix.productservicefirstproject.models.Products;
 import com.pheonix.productservicefirstproject.projections.ProductWithIdAndTitle;
 import com.pheonix.productservicefirstproject.projections.ProductWithIdTitleAndPrice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -54,8 +56,9 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
     Optional<Products> findById(Long id);
 
     //GET - HTTP Call
+    //JPA supports Pagination with the "Pagable" intrface - it returns a page of products
     @Override
-    List<Products> findAll();
+    Page<Products> findAll(Pageable pageable);
 
     //D - delete a product
     //DELETE - HTTP Call
